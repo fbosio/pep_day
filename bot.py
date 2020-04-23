@@ -24,7 +24,7 @@ class PepUpdater(Updater):
         job = context.job_queue.run_daily(self._send_pep,
                                           datetime.now().time(),
                                           context=chat_id)
-        job.callback()
+        job.callback(chat_id)
 
         if 'job' in context.chat_data:
             context.chat_data['job'].schedule_removal()
