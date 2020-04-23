@@ -21,6 +21,7 @@ class PepUpdater(Updater):
 
     def start(self, update, context):
         chat_id = update.effective_chat.id
+        self._send_pep(chat_id)
         job = context.job_queue.run_daily(self._send_pep,
                                           datetime.now().time(),
                                           context=chat_id)
