@@ -19,12 +19,15 @@ class PepUpdater(Updater):
         stop_handler = CommandHandler('stop', self.stop)
         self.dispatcher.add_handler(stop_handler)
 
+        easter_egg_handler = CommandHandler('http', self.easter_egg)
+        self.dispatcher.add_handler(easter_egg_handler)
+
     def start(self, update, context):
         chat_id = update.effective_chat.id
         job = context.job_queue.run_daily(self._send_pep,
                                           datetime.now().time(),
                                           context=chat_id)
-        job.run()
+        job.run(context.dispatcher)
 
         if 'job' in context.chat_data:
             context.chat_data['job'].schedule_removal()
@@ -37,6 +40,11 @@ class PepUpdater(Updater):
                                        'want.'))
 
         context.chat_data['job'].schedule_removal()
+
+    def easter_egg(self, update, context):
+        context.bot.send_voice(chat_id=update.effective_chat.id,
+                               voice=open('https.ogg', 'rb'))
+
 
     def _send_pep(self, context):
         chat_id = context.job.context
@@ -51,7 +59,4 @@ print(TOKEN)
 PORT = int(os.environ.get('PORT', '8443'))
 
 updater = PepUpdater(TOKEN)
-# updater.start_webhook(listen='0.0.0.0', port=PORT, url_path=TOKEN)
-# updater.bot.set_webhook('https://pep-day-bot.herokuapp.com/' + TOKEN)
 updater.start_polling()
-# updater.idle()
