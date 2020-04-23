@@ -1,3 +1,4 @@
+import logging
 import os
 from random import choice
 from datetime import datetime
@@ -42,11 +43,14 @@ class PepUpdater(Updater):
                                                 f'{choice(self.urls)}'))
 
 
+logging.basicConfig(level=logging.DEBUG)
+
 TOKEN = os.environ.get('TOKEN')
+print(TOKEN)
 PORT = int(os.environ.get('PORT', '8443'))
 
 updater = PepUpdater(TOKEN)
 updater.start_webhook(listen='0.0.0.0', port=PORT, url_path=TOKEN)
 updater.bot.set_webhook('https://pep-day-bot.herokuapp.com/' + TOKEN)
 updater.start_polling()
-updater.idle()
+# updater.idle()
